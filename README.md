@@ -7,7 +7,7 @@ Spotlight is a long-running CLI that lets you preview worktrees on your main bra
 ## Install
 
 ```bash
-npm install -g .
+pnpm install -g .
 ```
 
 ## Usage
@@ -50,8 +50,11 @@ Once a worktree is active, the menu updates to let you switch or reset:
 ## Development
 
 ```bash
-npm install
-npm run dev       # run directly with tsx
-npm run build     # compile to dist/
-npm start         # run compiled output
+pnpm install
+pnpm dev          # run directly with tsx
+pnpm build        # compile to dist/
+pnpm start        # run compiled output
+pnpm lint         # eslint
+pnpm format       # prettier --write
+pnpm format:check # prettier --check
 ```
