@@ -12,10 +12,7 @@ Pick a worktree and main instantly reflects its full state: commits, staged chan
 ## Install
 
 ```bash
-git clone git@github.com:r0ohafza/kamui.git
-cd kamui
-pnpm install && pnpm build
-pnpm install -g .
+npm install -g @roohafza/kamui
 ```
 
 Then run `kamui` from any repo with worktrees.
