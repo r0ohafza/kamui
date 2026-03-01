@@ -7,6 +7,8 @@ import {
   fetch,
   type Worktree,
 } from "./git";
+import { bold, dim } from "./format";
+import { watchAndSync } from "./watcher";
 
 const RESET_CHOICE = "__reset__";
 const EXIT_CHOICE = "__exit__";
@@ -28,7 +30,8 @@ function cleanup(): void {
 }
 
 async function promptWorktreeSelection(): Promise<string> {
-  const worktrees = getWorktrees();
+  const excluded = new Set(["main", "master", `origin/main`, `origin/master`]);
+  const worktrees = getWorktrees().filter((wt) => !excluded.has(wt.branch));
 
   if (worktrees.length === 0) {
     console.log("No worktrees found. Create one with: git worktree add <path> <branch>");
@@ -104,17 +107,16 @@ async function run(): Promise<void> {
     applyWorktreeState(selected);
     activeWorktree = selected;
     console.log(
-      `Done. ${mainBranch} now reflects ${bold(selected.branch)} (${selected.commit.slice(0, 7)}) including uncommitted changes\n`,
+      `Done. ${mainBranch} now reflects ${bold(selected.branch)} (${selected.commit.slice(0, 7)}) including uncommitted changes`,
     );
-  }
-}
 
-// ANSI helpers
-function bold(s: string): string {
-  return `\x1b[1m${s}\x1b[0m`;
-}
-function dim(s: string): string {
-  return `\x1b[2m${s}\x1b[0m`;
+    const action = await watchAndSync(selected);
+    if (action === "quit") {
+      cleanup();
+      break;
+    }
+    // "back" → continue loop to show selection menu
+  }
 }
 
 // Auto-reset on exit signals

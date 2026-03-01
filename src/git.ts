@@ -126,13 +126,16 @@ function copyUntrackedFilesToMain(worktreePath: string, files: string[]): void {
 }
 
 export function applyWorktreeState(worktree: Worktree): void {
+  // Read the worktree's current HEAD (may have advanced since selection)
+  const currentHead = gitInDir(worktree.path, "rev-parse HEAD");
+
   // Capture uncommitted state from the worktree before resetting
   const stagedDiff = captureWorktreeStagedDiff(worktree.path);
   const unstagedDiff = captureWorktreeUnstagedDiff(worktree.path);
   const untrackedFiles = getWorktreeUntrackedFiles(worktree.path);
 
-  // Reset main to the worktree's commit
-  resetToCommit(worktree.commit);
+  // Reset main to the worktree's current HEAD
+  resetToCommit(currentHead);
 
   // Re-apply staged changes to the index
   applyDiff(stagedDiff, true);
