@@ -1,14 +1,24 @@
 # spotlight
 
-Switch your main branch to any git worktree's state.
+Preview any git worktree on your main branch — with live sync.
 
-Spotlight is a long-running CLI that lets you preview worktrees on your main branch. Pick a worktree, and main instantly reflects its state. Switch between worktrees freely. When you exit, main resets back to `origin/main` automatically.
+Pick a worktree and main instantly reflects its full state: commits, staged changes, unstaged changes, and untracked files. Edit files in your worktree and watch main update in real time. When you exit, main resets to `origin/main` automatically.
+
+## Prerequisites
+
+- Node.js 18+
+- git with at least one worktree set up (`git worktree add <path> <branch>`)
 
 ## Install
 
 ```bash
+git clone git@github.com:r0ohafza/Spotlight.git
+cd Spotlight
+pnpm install && pnpm build
 pnpm install -g .
 ```
+
+Then run `spotlight` from any repo with worktrees.
 
 ## Usage
 
@@ -40,12 +50,19 @@ Once a worktree is active, the menu updates to let you switch or reset:
   Exit
 ```
 
-## What it does
+After selection, spotlight enters live sync mode. Any file change in the worktree is automatically re-applied to main:
 
-1. Lists all git worktrees in the current repo
-2. Resets the main branch to the selected worktree's commit (`git reset --hard`)
-3. Keeps running so you can switch between worktrees at any time
-4. Automatically resets main to `origin/main` when you exit (Ctrl+C or select Exit)
+```
+  Watching feature-auth for changes... (Enter = back to menu, q = quit)
+  3:42:15 PM Synced
+  3:42:18 PM Synced
+```
+
+| Key     | Action              |
+|---------|---------------------|
+| Enter   | Back to worktree menu |
+| q       | Quit and reset main |
+| Ctrl+C  | Quit and reset main |
 
 ## Development
 
