@@ -104,7 +104,7 @@ async function run(): Promise<void> {
     applyWorktreeState(selected);
     activeWorktree = selected;
     console.log(
-      `Done. ${mainBranch} now reflects ${bold(selected.branch)} (${selected.commit.slice(0, 7)})\n`,
+      `Done. ${mainBranch} now reflects ${bold(selected.branch)} (${selected.commit.slice(0, 7)}) including uncommitted changes\n`,
     );
   }
 }

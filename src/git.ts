@@ -1,4 +1,6 @@
 import { execSync } from "node:child_process";
+import { cpSync, mkdirSync } from "node:fs";
+import { dirname, join } from "node:path";
 
 export interface Worktree {
   path: string;
@@ -8,7 +10,19 @@ export interface Worktree {
 }
 
 function git(args: string): string {
-  return execSync(`git ${args}`, { encoding: "utf-8" }).trim();
+  return execSync(`git ${args}`, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).trim();
+}
+
+function gitInDir(dir: string, args: string): string {
+  return execSync(`git ${args}`, { cwd: dir, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).trim();
+}
+
+function gitInDirRaw(dir: string, args: string): string {
+  return execSync(`git ${args}`, { cwd: dir, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] });
+}
+
+function gitWithInput(args: string, input: string): void {
+  execSync(`git ${args}`, { input, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] });
 }
 
 export function getWorktrees(): Worktree[] {
@@ -57,7 +71,12 @@ export function getMainBranch(): string {
 }
 
 export function getOriginMainCommit(mainBranch: string): string {
-  return git(`rev-parse origin/${mainBranch}`);
+  try {
+    return git(`rev-parse origin/${mainBranch}`);
+  } catch {
+    // Fallback to local branch if remote ref doesn't exist
+    return git(`rev-parse ${mainBranch}`);
+  }
 }
 
 export function getWorktreeCommit(worktree: Worktree): string {
@@ -73,10 +92,58 @@ export function resetToCommit(commit: string): void {
 export function resetToOriginMain(mainBranch: string): void {
   const commit = getOriginMainCommit(mainBranch);
   resetToCommit(commit);
+  git("clean -fd");
+}
+
+function captureWorktreeStagedDiff(worktreePath: string): string {
+  return gitInDirRaw(worktreePath, "diff --cached --binary");
+}
+
+function captureWorktreeUnstagedDiff(worktreePath: string): string {
+  return gitInDirRaw(worktreePath, "diff --binary");
+}
+
+function getWorktreeUntrackedFiles(worktreePath: string): string[] {
+  const raw = gitInDir(worktreePath, "ls-files --others --exclude-standard");
+  if (!raw) return [];
+  return raw.split("\n");
+}
+
+function applyDiff(diff: string, cached: boolean): void {
+  if (!diff) return;
+  const flag = cached ? " --cached" : "";
+  gitWithInput(`apply --binary${flag}`, diff);
+}
+
+function copyUntrackedFilesToMain(worktreePath: string, files: string[]): void {
+  const mainDir = process.cwd();
+  for (const file of files) {
+    const src = join(worktreePath, file);
+    const dest = join(mainDir, file);
+    mkdirSync(dirname(dest), { recursive: true });
+    cpSync(src, dest);
+  }
 }
 
 export function applyWorktreeState(worktree: Worktree): void {
+  // Capture uncommitted state from the worktree before resetting
+  const stagedDiff = captureWorktreeStagedDiff(worktree.path);
+  const unstagedDiff = captureWorktreeUnstagedDiff(worktree.path);
+  const untrackedFiles = getWorktreeUntrackedFiles(worktree.path);
+
+  // Reset main to the worktree's commit
   resetToCommit(worktree.commit);
+
+  // Re-apply staged changes to the index
+  applyDiff(stagedDiff, true);
+
+  // Re-apply unstaged changes to the working tree
+  applyDiff(unstagedDiff, false);
+
+  // Copy untracked files from worktree to main
+  if (untrackedFiles.length > 0) {
+    copyUntrackedFilesToMain(worktree.path, untrackedFiles);
+  }
 }
 
 export function fetch(): void {
