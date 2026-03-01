@@ -1,14 +1,35 @@
 {
-  "name": "kamui",
+  "name": "@rooh/kamui",
   "version": "0.1.0",
   "description": "Switch your main branch to any git worktree's state",
   "type": "module",
+  "license": "MIT",
+  "author": "r0ohafza",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r0ohafza/kamui.git"
+  },
+  "homepage": "https://github.com/r0ohafza/kamui#readme",
+  "bugs": {
+    "url": "https://github.com/r0ohafza/kamui/issues"
+  },
+  "keywords": [
+    "git",
+    "worktree",
+    "branch",
+    "preview",
+    "sync",
+    "cli"
+  ],
   "bin": {
     "kamui": "./dist/index.js"
   },
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsx src/index.ts",
