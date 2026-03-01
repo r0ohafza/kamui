@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { select } from "@inquirer/prompts";
 import {
   getWorktrees,
