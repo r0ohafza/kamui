@@ -60,14 +60,14 @@ async function promptWorktreeSelection(): Promise<string> {
 
   return select({
     message: activeWorktree
-      ? `Spotlight active on ${bold(activeWorktree.branch)}. Switch or reset?`
-      : "Select a worktree to spotlight:",
+      ? `Kamui active on ${bold(activeWorktree.branch)}. Switch or reset?`
+      : "Select a worktree to kamui:",
     choices,
   });
 }
 
 async function run(): Promise<void> {
-  console.log(bold("spotlight") + " — switch main to any worktree's state\n");
+  console.log(bold("kamui") + " — switch main to any worktree's state\n");
 
   mainBranch = getMainBranch();
   console.log(`Main branch: ${mainBranch}`);

@@ -1,4 +1,4 @@
-# spotlight
+# kamui
 
 Preview any git worktree on your main branch — with live sync.
 
@@ -12,29 +12,29 @@ Pick a worktree and main instantly reflects its full state: commits, staged chan
 ## Install
 
 ```bash
-git clone git@github.com:r0ohafza/Spotlight.git
-cd Spotlight
+git clone git@github.com:r0ohafza/kamui.git
+cd kamui
 pnpm install && pnpm build
 pnpm install -g .
 ```
 
-Then run `spotlight` from any repo with worktrees.
+Then run `kamui` from any repo with worktrees.
 
 ## Usage
 
-Run `spotlight` from any git repository that has worktrees:
+Run `kamui` from any git repository that has worktrees:
 
 ```bash
-spotlight
+kamui
 ```
 
 Use arrow keys to select a worktree, then press Enter.
 
 ```
-spotlight — switch main to any worktree's state
+kamui — switch main to any worktree's state
 
 Main branch: main
-? Select a worktree to spotlight:
+? Select a worktree to kamui:
 ❯ feature-auth      ~/projects/myapp-auth      a1b2c3d
   fix-header         ~/projects/myapp-header    e4f5g6h
   Exit
@@ -43,14 +43,14 @@ Main branch: main
 Once a worktree is active, the menu updates to let you switch or reset:
 
 ```
-? Spotlight active on feature-auth. Switch or reset?
+? Kamui active on feature-auth. Switch or reset?
 ❯ feature-auth (active)  ~/projects/myapp-auth      a1b2c3d
   fix-header              ~/projects/myapp-header    e4f5g6h
   Reset to origin/main
   Exit
 ```
 
-After selection, spotlight enters live sync mode. Any file change in the worktree is automatically re-applied to main:
+After selection, kamui enters live sync mode. Any file change in the worktree is automatically re-applied to main:
 
 ```
   Watching feature-auth for changes... (Enter = back to menu, q = quit)
