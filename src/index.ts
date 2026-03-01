@@ -8,7 +8,7 @@ import {
   applyWorktreeState,
   fetch,
   type Worktree,
-} from "./git.js";
+} from "./git";
 
 const RESET_CHOICE = "__reset__";
 const EXIT_CHOICE = "__exit__";
