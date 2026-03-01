@@ -5,10 +5,16 @@
     "moduleResolution": "bundler",
     "outDir": "dist",
     "rootDir": "src",
+    "declaration": true,
+    "sourceMap": true,
     "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "declaration": true
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "skipLibCheck": true
   },
   "include": ["src"]
 }
